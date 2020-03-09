@@ -8,9 +8,6 @@ const char *host = "192.168.43.85";
 
 WiFiClient client;
 
-void connect_wifi();
-void connect_server();
-
 void connect_wifi()
 {
   Serial.printf("Connecting to %s ", ssid);
