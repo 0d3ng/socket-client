@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 
-const char *ssid = "od3ng";
-const char *password = "0d3n9bro";
+const char *ssid = "####";
+const char *password = "####";
 const uint16_t port = 2004;
 const char *host = "192.168.43.85";
 
@@ -19,6 +19,7 @@ void connect_wifi()
     Serial.print(".");
   }
   Serial.println(" connected");
+  delay(250);
 }
 
 void connect_server()
@@ -36,6 +37,12 @@ void connect_server()
     Serial.println("[Response:]");
     String line = client.readStringUntil('\n');
     Serial.println(line);
+    if (line.equalsIgnoreCase("led-on"))
+    {
+      pinMode(BUILTIN_LED, HIGH);
+      delay(3000);
+      pinMode(BUILTIN_LED, LOW);
+    }
     client.stop();
     Serial.println("\n[Disconnected]");
   }
@@ -50,6 +57,7 @@ void connect_server()
 void setup()
 {
   Serial.begin(115200);
+  Serial.println("Contoh penggunaan socket client");
   connect_wifi();
 }
 
