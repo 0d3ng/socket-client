@@ -1,10 +1,12 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 
-const char *ssid = "####";
-const char *password = "####";
+const char *ssid = "od3ng";
+const char *password = "0d3n9bro";
 const uint16_t port = 2004;
 const char *host = "192.168.43.85";
+
+WiFiClient client;
 
 void connect_wifi();
 void connect_server();
@@ -24,34 +26,14 @@ void connect_wifi()
 
 void connect_server()
 {
-  WiFiClient client;
-
-  Serial.printf("\n[Connecting to %s ... ", host);
-  if (client.connect(host, port))
+  while (!client.connect(host, port))
   {
-    Serial.println("connected]");
-
-    Serial.println("[Sending a request]");
-    client.print("Hai from ESP8266");
-
-    Serial.println("[Response:]");
-    String line = client.readStringUntil('\n');
-    Serial.println(line);
-    if (line.equalsIgnoreCase("led-on"))
-    {
-      pinMode(BUILTIN_LED, HIGH);
-      delay(3000);
-      pinMode(BUILTIN_LED, LOW);
-    }
-    client.stop();
-    Serial.println("\n[Disconnected]");
+    Serial.printf("\n[Connecting to %s ... ", host);
+    delay(1000);
+    return;
   }
-  else
-  {
-    Serial.println("connection failed!]");
-    client.stop();
-  }
-  delay(3000);
+  Serial.println("connected]");
+  delay(1000);
 }
 
 void setup()
@@ -59,9 +41,22 @@ void setup()
   Serial.begin(115200);
   Serial.println("Contoh penggunaan socket client");
   connect_wifi();
+  connect_server();
 }
 
 void loop()
 {
-  connect_server();
+  if (client.connected())
+  {
+    Serial.print("[Response:]");
+    String line = client.readStringUntil('\n');
+    Serial.println(line);
+    if (line.equalsIgnoreCase("led-on"))
+    {
+      pinMode(LED_BUILTIN, HIGH);
+      delay(3000);
+      pinMode(LED_BUILTIN, LOW);
+    }
+  }
+  delay(250);
 }
